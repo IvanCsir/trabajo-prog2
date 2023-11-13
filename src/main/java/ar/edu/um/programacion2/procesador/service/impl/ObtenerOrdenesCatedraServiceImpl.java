@@ -1,10 +1,12 @@
 package ar.edu.um.programacion2.procesador.service.impl;
 
 import ar.edu.um.programacion2.procesador.domain.Orden;
+import ar.edu.um.programacion2.procesador.repository.ObtenerOrdenesCatedraRepository;
 import ar.edu.um.programacion2.procesador.service.ObtenerOrdenesCatedraService;
 import ar.edu.um.programacion2.procesador.service.dto.OrdenesDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.netflix.discovery.converters.Auto;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraService {
 
     private final Logger log = LoggerFactory.getLogger(ObtenerOrdenesCatedraServiceImpl.class);
+
+    @Autowired
+    ObtenerOrdenesCatedraRepository obtenerOrdenesCatedraRepository;
 
     @Override
     public HttpResponse<String> obtenerRespuestaOrdenes() {
@@ -40,8 +46,10 @@ public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraSe
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            log.info("ORDENES OBTENIDAS CORRECTAMENTE");
             return response;
         } catch (IOException | InterruptedException e) {
+            log.error("No se pudieron obtener las órdenes");
             e.printStackTrace();
             return null;
         }
@@ -61,6 +69,7 @@ public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraSe
                 orden.setEjecutada(false);
                 orden.setOperacionExitosa(false);
                 orden.setOperacionObservaciones("");
+                this.obtenerOrdenesCatedraRepository.save(orden);
             }
 
             return ordenes;
