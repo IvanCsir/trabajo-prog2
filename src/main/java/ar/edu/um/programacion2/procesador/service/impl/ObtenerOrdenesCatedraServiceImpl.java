@@ -64,12 +64,19 @@ public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraSe
             OrdenesDTO response = objectMapper.readValue(jsonResponse.body(), OrdenesDTO.class);
             List<Orden> ordenes = response.getOrdenes();
 
+            List<Orden> ordenesGuardadas = obtenerOrdenesCatedraRepository.findAll();
+
             for (Orden orden : ordenes) {
-                orden.setReportada(false);
-                orden.setEjecutada(false);
-                orden.setOperacionExitosa(false);
-                orden.setOperacionObservaciones("");
-                this.obtenerOrdenesCatedraRepository.save(orden);
+                boolean ordenExistente = ordenesGuardadas
+                    .stream()
+                    .anyMatch(ord -> ord.getFechaOperacion().equals(orden.getFechaOperacion()));
+                if (!ordenExistente) {
+                    orden.setReportada(false);
+                    orden.setEjecutada(false);
+                    orden.setOperacionExitosa(false);
+                    orden.setOperacionObservaciones("");
+                    this.obtenerOrdenesCatedraRepository.save(orden);
+                }
             }
 
             return ordenes;
@@ -79,7 +86,7 @@ public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraSe
         }
     }
 
-    @Scheduled(fixedRate = 60000) // Se ejecutará cada 1 minuto
+    @Scheduled(fixedRate = 60000) // Lo ejecuto cada 1 minuto
     public List<Orden> obtenerOrdenesScheduled() {
         HttpResponse<String> response = obtenerRespuestaOrdenes();
         List<Orden> lista_ordenes = mapeoOrdenesCatedraToOrdenesDTO(response);

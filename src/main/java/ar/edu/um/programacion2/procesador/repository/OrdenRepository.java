@@ -1,6 +1,7 @@
 package ar.edu.um.programacion2.procesador.repository;
 
 import ar.edu.um.programacion2.procesador.domain.Orden;
+import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
