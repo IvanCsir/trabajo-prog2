@@ -1,6 +1,8 @@
 package ar.edu.um.programacion2.procesador.service;
 
+import ar.edu.um.programacion2.procesador.domain.Orden;
 import ar.edu.um.programacion2.procesador.service.dto.OrdenDTO;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -5,6 +5,7 @@ import ar.edu.um.programacion2.procesador.repository.OrdenRepository;
 import ar.edu.um.programacion2.procesador.service.OrdenService;
 import ar.edu.um.programacion2.procesador.service.dto.OrdenDTO;
 import ar.edu.um.programacion2.procesador.service.mapper.OrdenMapper;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,4 +82,9 @@ public class OrdenServiceImpl implements OrdenService {
         log.debug("Request to delete Orden : {}", id);
         ordenRepository.deleteById(id);
     }
+    /*@Override
+    public List<Orden> getByModo(String modo) {
+        List<Orden> lista_ordenes_modo = this.ordenRepository.findByModo(modo);
+        return lista_ordenes_modo;
+    }*/
 }

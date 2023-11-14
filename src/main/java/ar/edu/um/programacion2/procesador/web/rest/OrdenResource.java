@@ -1,6 +1,9 @@
 package ar.edu.um.programacion2.procesador.web.rest;
 
+import ar.edu.um.programacion2.procesador.domain.Orden;
 import ar.edu.um.programacion2.procesador.repository.OrdenRepository;
+import ar.edu.um.programacion2.procesador.service.ObtenerOrdenesCatedraService;
+import ar.edu.um.programacion2.procesador.service.OrdenInmediataService;
 import ar.edu.um.programacion2.procesador.service.OrdenService;
 import ar.edu.um.programacion2.procesador.service.dto.OrdenDTO;
 import ar.edu.um.programacion2.procesador.web.rest.errors.BadRequestAlertException;
@@ -11,6 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +44,9 @@ public class OrdenResource {
     private final OrdenService ordenService;
 
     private final OrdenRepository ordenRepository;
+
+    @Autowired
+    protected OrdenInmediataService ordenInmediataService;
 
     public OrdenResource(OrdenService ordenService, OrdenRepository ordenRepository) {
         this.ordenService = ordenService;
@@ -177,5 +184,11 @@ public class OrdenResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/ahora")
+    public List<Orden> obtenerOrdenesPrueba() {
+        List<Orden> prueba = this.ordenInmediataService.procesarOrdenesAhora();
+        return prueba;
     }
 }

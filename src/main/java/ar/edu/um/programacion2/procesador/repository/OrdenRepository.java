@@ -10,4 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface OrdenRepository extends JpaRepository<Orden, Long> {}
+public interface OrdenRepository extends JpaRepository<Orden, Long> {
+    List<Orden> findByModo(String modo);
+    List<Orden> findByModoAndEjecutada(String modo, Boolean ejecutada);
+}
