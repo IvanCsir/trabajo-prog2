@@ -91,7 +91,6 @@ public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraSe
         HttpResponse<String> response = obtenerRespuestaOrdenes();
         List<Orden> lista_ordenes = mapeoOrdenesCatedraToOrdenesDTO(response);
         System.out.println(lista_ordenes);
-        // Aquí podrías hacer algo con la lista de órdenes si es necesario
         return lista_ordenes;
     }
 }
