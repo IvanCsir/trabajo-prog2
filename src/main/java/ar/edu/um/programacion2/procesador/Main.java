@@ -1,25 +1,33 @@
 package ar.edu.um.programacion2.procesador;
 
 import ar.edu.um.programacion2.procesador.service.AnalizarOrdenService;
+import ar.edu.um.programacion2.procesador.service.RepartidorOrdenesAColasService;
 import ar.edu.um.programacion2.procesador.service.impl.AnalizarOrdenServiceImpl;
+import ar.edu.um.programacion2.procesador.service.impl.RepartidorOrdenesAColasServiceImpl;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import org.springframework.boot.SpringApplication;
 
 public class Main {
 
     public static void main(String[] args) {
-        String codigoPrueba = "asdalksndkja";
+        //String codigoPrueba = "asdalksndkja";
 
-        AnalizarOrdenService ordenService = new AnalizarOrdenServiceImpl(); // Reemplaza con la instancia adecuada
+        //AnalizarOrdenService ordenService = new AnalizarOrdenServiceImpl(); // Reemplaza con la instancia adecuada
 
         //boolean resultadoConsulta = ordenService.consultarAccion(codigoPrueba);
         //boolean res = ordenService.consultarCliente(1139);
 
-        Instant hora = Instant.parse("2023-11-16T04:00:00Z");
+        /*Instant hora = Instant.parse("2023-11-16T04:00:00Z");
         ZoneId zonaHorariaUtcMenos3 = ZoneId.of("UTC-3");
         ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(hora, zonaHorariaUtcMenos3);
 
-        boolean ress = ordenService.consultarHora(zonedDateTime.toInstant());
+        boolean ress = ordenService.consultarHora(zonedDateTime.toInstant());*/
+        //RepartidorOrdenesAColasService repartidorService = new RepartidorOrdenesAColasServiceImpl();
+
+        // Llamada al método que quieres probar
+        //repartidorService.analizarModo();
+
     }
 }

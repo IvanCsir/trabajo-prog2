@@ -22,7 +22,9 @@ public class OrdenInmediataServiceImpl implements OrdenInmediataService {
 
     @Override
     public List<Orden> procesarOrdenesAhora() {
-        List<Orden> lista_ordenes = this.ordenRepository.findByModoAndEjecutada("AHORA", false);
+        //List<Orden> lista_ordenes = this.ordenRepository.findByModoAndEjecutada("AHORA", false);
+        List<Orden> lista_ordenes = this.ordenRepository.findByEjecutada(true);
+
         System.out.println(lista_ordenes);
         return lista_ordenes;
     }

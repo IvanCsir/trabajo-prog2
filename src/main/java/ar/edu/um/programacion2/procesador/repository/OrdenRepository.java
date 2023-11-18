@@ -13,4 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface OrdenRepository extends JpaRepository<Orden, Long> {
     List<Orden> findByModo(String modo);
     List<Orden> findByModoAndEjecutada(String modo, Boolean ejecutada);
+
+    List<Orden> findByEjecutada(Boolean ejecutada);
 }

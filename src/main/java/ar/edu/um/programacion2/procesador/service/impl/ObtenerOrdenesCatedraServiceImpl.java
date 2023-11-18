@@ -1,6 +1,7 @@
 package ar.edu.um.programacion2.procesador.service.impl;
 
 import ar.edu.um.programacion2.procesador.domain.Orden;
+import ar.edu.um.programacion2.procesador.manager.ManejadorDeColas;
 import ar.edu.um.programacion2.procesador.repository.ObtenerOrdenesCatedraRepository;
 import ar.edu.um.programacion2.procesador.service.ObtenerOrdenesCatedraService;
 import ar.edu.um.programacion2.procesador.service.dto.OrdenesDTO;
@@ -14,6 +15,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Collections;
 import java.util.List;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraSe
 
     @Autowired
     ObtenerOrdenesCatedraRepository obtenerOrdenesCatedraRepository;
+
+    @Autowired
+    public ManejadorDeColas manejadorDeColas;
 
     @Override
     public HttpResponse<String> obtenerRespuestaOrdenes() {
@@ -82,7 +87,7 @@ public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraSe
             return ordenes;
         } catch (IOException e) {
             e.printStackTrace();
-            return Collections.emptyList(); // Devuelve una lista vacía en caso de error
+            return Collections.emptyList();
         }
     }
 
@@ -93,4 +98,13 @@ public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraSe
         System.out.println(lista_ordenes);
         return lista_ordenes;
     }
+    /* @Scheduled(fixedRate = 60001)
+    public void probandoRepartidorColas(){
+        RepartidorOrdenesAColasServiceImpl prueba = new RepartidorOrdenesAColasServiceImpl();
+        prueba.analizarModo();
+        System.out.println("Ordenes in" + prueba.manejadorDeColas.getColaInmediatas());
+        System.out.println("Ordenes prin" + prueba.manejadorDeColas.getColaPrincipioDia());
+        System.out.println("Ordenes fin" + prueba.manejadorDeColas.getColaFinDia());
+
+    }*/
 }
