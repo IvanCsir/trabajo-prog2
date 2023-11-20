@@ -51,10 +51,10 @@ public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraSe
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            log.info("ORDENES OBTENIDAS CORRECTAMENTE");
+            log.info("ORDENES OBTENIDAS CORRECTAMENTE DEL SERVICIO CATEDRA");
             return response;
         } catch (IOException | InterruptedException e) {
-            log.error("No se pudieron obtener las órdenes");
+            log.error("NO SE PUDIERON OBTENER LAS ORDENES DEL SERVICIO CATEDRA");
             e.printStackTrace();
             return null;
         }

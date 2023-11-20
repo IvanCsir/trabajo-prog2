@@ -33,20 +33,17 @@ public class RepartidorOrdenesAColasServiceImpl implements RepartidorOrdenesACol
             log.info("Ordenes a procesar: {}", lista_ordenes);
 
             for (Orden orden : lista_ordenes) {
-                if (orden.getModo().equals("AHORA") && !manejadorDeColas.getColaInmediatas().contains(orden.getId())) {
+                if (orden.getModo().equals("AHORA")) {
                     manejadorDeColas.agregarOrdenInmediata(orden);
                     System.out.println(manejadorDeColas.getColaInmediatas());
-                    log.info("Orden agregada correctamente a la cola de inmediatas");
-                } else if (orden.getModo().equals("PRINCIPIODIA") && !manejadorDeColas.getColaPrincipioDia().contains(orden.getId())) {
+                } else if (orden.getModo().equals("PRINCIPIODIA")) {
                     manejadorDeColas.agregarOrdenPrincipioDia(orden);
                     System.out.println(manejadorDeColas.getColaPrincipioDia());
-                    log.info("Orden agregada correctamente a la cola de principio día");
-                } else if (orden.getModo().equals("FINDIA") && !manejadorDeColas.getColaFinDia().contains(orden.getId())) {
+                } else if (orden.getModo().equals("FINDIA")) {
                     manejadorDeColas.agregarOrdenFinDia(orden);
                     System.out.println(manejadorDeColas.getColaFinDia());
-                    log.info("Orden agregada correctamente a la cola de fin día");
                 } else {
-                    log.warn("La orden con ID {} ya está en la cola. Modo no reconocido: {}", orden.getId(), orden.getModo());
+                    log.warn("Modo no reconocido: {}", orden.getModo());
                 }
             }
             return "Ordenes guardadas en colas";
