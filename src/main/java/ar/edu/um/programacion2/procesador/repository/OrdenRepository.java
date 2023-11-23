@@ -15,4 +15,6 @@ public interface OrdenRepository extends JpaRepository<Orden, Long> {
     List<Orden> findByModoAndEjecutada(String modo, Boolean ejecutada);
 
     List<Orden> findByEjecutada(Boolean ejecutada);
+
+    List<Orden> findById(int id);
 }

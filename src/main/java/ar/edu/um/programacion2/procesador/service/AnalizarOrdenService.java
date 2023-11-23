@@ -10,4 +10,6 @@ public interface AnalizarOrdenService {
     public boolean consultarCliente(int id);
 
     public boolean consultarHora(Instant fechaOperacion);
+
+    public Orden actualizarPrecio(Orden orden);
 }

@@ -1,5 +1,7 @@
 package ar.edu.um.programacion2.procesador.service.impl;
 
+import ar.edu.um.programacion2.procesador.domain.Orden;
+import ar.edu.um.programacion2.procesador.repository.OrdenRepository;
 import ar.edu.um.programacion2.procesador.service.AnalizarOrdenService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,8 +14,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
 
     private final Logger log = LoggerFactory.getLogger(AnalizarOrdenServiceImpl.class);
+
+    @Autowired
+    protected OrdenRepository ordenRepository;
 
     @Override
     public boolean consultarAccion(String codigo) {
@@ -121,5 +128,62 @@ public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
         }
         // Verificar si la fechaOperacion está entre los límites
         return resultado;
+    }
+
+    @Override
+    public Orden actualizarPrecio(Orden orden) {
+        String token =
+            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ"; // Reemplaza con tu token real
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        String url = "http://192.168.194.254:8000/api/acciones/ultimovalor/" + orden.getCodigoAccion();
+
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("Authorization", "Bearer " + token).build();
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonResponse = objectMapper.readTree(response.body());
+
+            JsonNode ultimoValor = jsonResponse.get("ultimoValor");
+            if (ultimoValor != null) {
+                double nuevoPrecio = ultimoValor.get("valor").asDouble();
+
+                //orden.setPrecio(nuevoPrecio);
+
+                Optional<Orden> optionalOrdenExistente = ordenRepository.findById(orden.getId());
+
+                if (optionalOrdenExistente.isPresent()) {
+                    Orden ordenExistente = optionalOrdenExistente.get();
+
+                    ordenExistente.setPrecio(nuevoPrecio);
+
+                    ordenRepository.save(ordenExistente);
+
+                    log.info(
+                        "PRECIO ACTUALIZADO ORDEN ID {}. PRECIO ANTERIOR:{} - NUEVO PRECIO:{}",
+                        orden.getId(),
+                        orden.getPrecio(),
+                        ordenExistente.getPrecio()
+                    );
+
+                    return ordenExistente;
+                } else {
+                    log.error(
+                        "La orden con ID {} no existe en la base de datos. No se realizará ninguna operación de actualización.",
+                        orden.getId()
+                    );
+                    return null;
+                }
+            } else {
+                log.info("No se encontró el último valor para la acción '{}'", orden.getCodigoAccion());
+                return null;
+            }
+        } catch (IOException | InterruptedException e) {
+            log.error("Error al consultar el último valor y actualizar el precio", e);
+            return null;
+        }
     }
 }
