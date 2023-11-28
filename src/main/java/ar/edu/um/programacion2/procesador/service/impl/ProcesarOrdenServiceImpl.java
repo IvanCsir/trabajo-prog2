@@ -18,7 +18,7 @@ public class ProcesarOrdenServiceImpl implements ProcesarOrdenService {
         orden.setEjecutada(true);
         orden.setOperacionExitosa(true);
         orden.setOperacionObservaciones("Compra realizada con éxito");
-        log.info("COMPRA REALIZADA CON EXITO ORDEN ID: {}", orden.getId());
+        //log.info("COMPRA REALIZADA CON EXITO ORDEN ID: {}", orden.getId());
         return true;
     }
 
@@ -27,7 +27,7 @@ public class ProcesarOrdenServiceImpl implements ProcesarOrdenService {
         orden.setEjecutada(true);
         orden.setOperacionExitosa(true);
         orden.setOperacionObservaciones("Venta realizada con éxito");
-        log.info("VENTA REALIZADA CON EXITO ORDEN ID: {}", orden.getId());
+        //log.info("VENTA REALIZADA CON EXITO ORDEN ID: {}", orden.getId());
         return true;
     }
 

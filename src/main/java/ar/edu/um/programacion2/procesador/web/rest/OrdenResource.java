@@ -2,11 +2,10 @@ package ar.edu.um.programacion2.procesador.web.rest;
 
 import ar.edu.um.programacion2.procesador.domain.Orden;
 import ar.edu.um.programacion2.procesador.repository.OrdenRepository;
-import ar.edu.um.programacion2.procesador.service.ObtenerOrdenesCatedraService;
-import ar.edu.um.programacion2.procesador.service.OrdenInmediataService;
-import ar.edu.um.programacion2.procesador.service.OrdenService;
+import ar.edu.um.programacion2.procesador.service.*;
 import ar.edu.um.programacion2.procesador.service.dto.OrdenDTO;
 import ar.edu.um.programacion2.procesador.web.rest.errors.BadRequestAlertException;
+import com.netflix.discovery.converters.Auto;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -46,7 +45,10 @@ public class OrdenResource {
     private final OrdenRepository ordenRepository;
 
     @Autowired
-    protected OrdenInmediataService ordenInmediataService;
+    protected ColaPrincipioDiaService colaPrincipioDiaService;
+
+    @Autowired
+    protected ColaFinDiaService colaFinDiaService;
 
     public OrdenResource(OrdenService ordenService, OrdenRepository ordenRepository) {
         this.ordenService = ordenService;
@@ -186,9 +188,13 @@ public class OrdenResource {
             .build();
     }
 
-    @GetMapping("/ahora")
-    public List<Orden> obtenerOrdenesPrueba() {
-        List<Orden> prueba = this.ordenInmediataService.procesarOrdenesAhora();
-        return prueba;
+    @GetMapping("/principiodia/procesar")
+    public void procesarOrdenFicticioPD() {
+        this.colaPrincipioDiaService.procesarOrdenesPrincipioDia();
+    }
+
+    @GetMapping("/findia/procesar")
+    public void procesarOrdenFicticioFD() {
+        this.colaFinDiaService.procesarOrdenesFinDia();
     }
 }

@@ -34,7 +34,7 @@ public class ColaInmediatasServiceImpl implements ColaInmediatasService {
     protected OrdenRepository ordenRepository;
 
     @Override
-    public boolean procesarOrden() {
+    public boolean procesarOrdenesInmediatas() {
         Queue<Orden> cola = manejadorDeColas.getColaInmediatas();
         log.info("Tamaño inicial de la cola: {}", cola.size());
         while (!cola.isEmpty()) {
@@ -49,16 +49,13 @@ public class ColaInmediatasServiceImpl implements ColaInmediatasService {
                         procesarOrdenService.comprar(orden);
                         log.info("COMPRA REALIZADA CON ÉXITO ORDEN ID: {}", orden.getId());
                         ordenRepository.save(orden);
-
-                        return true;
                     } else {
                         procesarOrdenService.vender(orden);
                         log.info("VENTA REALIZADA CON ÉXITO ORDEN ID:{}", orden.getId());
                         ordenRepository.save(orden);
-                        return true;
                     }
                 } else {
-                    log.info("ORDEN ID:{} NO PROCESADA POR ACCIÓN O CLIENTE INEXISTENTE");
+                    log.info("ORDEN ID:{} NO PROCESADA POR ACCIÓN O CLIENTE INEXISTENTE", orden.getId());
                     orden.setEjecutada(true);
                     orden.setOperacionExitosa(false);
                     orden.setOperacionObservaciones("Cliente o accion inexistente");
@@ -80,7 +77,7 @@ public class ColaInmediatasServiceImpl implements ColaInmediatasService {
 
     @Scheduled(fixedRate = 30000) // Lo ejecuto cada 1 minuto y medio
     public boolean procesarOrd() {
-        boolean resultado = procesarOrden();
+        boolean resultado = procesarOrdenesInmediatas();
         return resultado;
     }
 }
