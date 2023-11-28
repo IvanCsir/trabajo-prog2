@@ -130,6 +130,11 @@ public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
         return resultado;
     }
 
+    /* @Override
+    public boolean consultarHora(Instant fechaOperacion){
+        ZonedDateTime hora = fechaOperacion.atZone(ZoneId.of("UTC-3"));
+    }*/
+
     @Override
     public Orden actualizarPrecio(Orden orden) {
         String token =

@@ -1,3 +1,7 @@
 package ar.edu.um.programacion2.procesador.service;
 
-public interface ColaInmediatasService {}
+import ar.edu.um.programacion2.procesador.domain.Orden;
+
+public interface ColaInmediatasService {
+    public boolean procesarOrden();
+}
