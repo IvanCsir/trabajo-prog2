@@ -53,7 +53,7 @@ public class RepartidorOrdenesAColasServiceImpl implements RepartidorOrdenesACol
         return "No se pudieron guardar las ordenes";
     }
 
-    @Scheduled(fixedRate = 90000) // Lo ejecuto cada 1 minuto y medio
+    @Scheduled(fixedRate = 60001) // Lo ejecuto cada 1 minuto y medio
     public String ejecutadorRepartidorPorModo() {
         String probando = repartidorPorModo();
         return probando;

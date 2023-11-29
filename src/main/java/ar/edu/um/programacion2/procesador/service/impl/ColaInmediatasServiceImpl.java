@@ -6,6 +6,8 @@ import ar.edu.um.programacion2.procesador.repository.OrdenRepository;
 import ar.edu.um.programacion2.procesador.service.AnalizarOrdenService;
 import ar.edu.um.programacion2.procesador.service.ColaInmediatasService;
 import ar.edu.um.programacion2.procesador.service.ProcesarOrdenService;
+import ar.edu.um.programacion2.procesador.service.ReportarOrdenService;
+import com.netflix.discovery.converters.Auto;
 import java.util.List;
 import java.util.Queue;
 import org.slf4j.Logger;
@@ -33,6 +35,9 @@ public class ColaInmediatasServiceImpl implements ColaInmediatasService {
     @Autowired
     protected OrdenRepository ordenRepository;
 
+    @Autowired
+    protected ReportarOrdenService reportarOrdenService;
+
     @Override
     public boolean procesarOrdenesInmediatas() {
         Queue<Orden> cola = manejadorDeColas.getColaInmediatas();
@@ -49,10 +54,12 @@ public class ColaInmediatasServiceImpl implements ColaInmediatasService {
                         procesarOrdenService.comprar(orden);
                         log.info("COMPRA REALIZADA CON ÉXITO ORDEN ID: {}", orden.getId());
                         ordenRepository.save(orden);
+                        reportarOrdenService.reportarOrden(orden);
                     } else {
                         procesarOrdenService.vender(orden);
                         log.info("VENTA REALIZADA CON ÉXITO ORDEN ID:{}", orden.getId());
                         ordenRepository.save(orden);
+                        reportarOrdenService.reportarOrden(orden);
                     }
                 } else {
                     log.info("ORDEN ID:{} NO PROCESADA POR ACCIÓN O CLIENTE INEXISTENTE", orden.getId());
@@ -60,6 +67,7 @@ public class ColaInmediatasServiceImpl implements ColaInmediatasService {
                     orden.setOperacionExitosa(false);
                     orden.setOperacionObservaciones("Cliente o accion inexistente");
                     ordenRepository.save(orden);
+                    reportarOrdenService.reportarOrden(orden);
                     return false;
                 }
             } else {
@@ -68,6 +76,7 @@ public class ColaInmediatasServiceImpl implements ColaInmediatasService {
                 orden.setOperacionExitosa(false);
                 orden.setOperacionObservaciones("Fuera del horario de compra y venta de acciones");
                 ordenRepository.save(orden);
+                reportarOrdenService.reportarOrden(orden);
                 return false;
             }
         }
