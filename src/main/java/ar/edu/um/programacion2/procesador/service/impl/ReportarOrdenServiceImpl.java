@@ -31,7 +31,7 @@ public class ReportarOrdenServiceImpl implements ReportarOrdenService {
     @Autowired
     protected OrdenRepository ordenRepository;
 
-    @Override
+    /* @Override
     public boolean reportarOrden(Orden orden) {
         String token =
             "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ";
@@ -39,14 +39,14 @@ public class ReportarOrdenServiceImpl implements ReportarOrdenService {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request;
 
-        // Coloca la orden en una lista
+
         List<Orden> listaOrdenes = new ArrayList<>();
         listaOrdenes.add(orden);
 
         // Construye el mapa con la clave "ordenes"
         Map<String, List<Orden>> jsonMap = Collections.singletonMap("ordenes", listaOrdenes);
 
-        // Convierte el objeto a JSON
+        // Convierto el objeto a JSON
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -61,7 +61,7 @@ public class ReportarOrdenServiceImpl implements ReportarOrdenService {
             return false;
         }
 
-        // Construyo la solicitud POST
+        // Hago el POST
         request =
             HttpRequest
                 .newBuilder()
@@ -86,6 +86,65 @@ public class ReportarOrdenServiceImpl implements ReportarOrdenService {
             }
         } catch (IOException | InterruptedException e) {
             log.error("ERROR AL ENVIAR LA ÓRDEN AL SERVICIO");
+            e.printStackTrace();
+            return false;
+        }
+    }*/
+
+    @Override
+    public boolean reportarOrdenes(List<Orden> lista_ordenes) {
+        String token =
+            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ";
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request;
+
+        // Construye el mapa con la clave "ordenes"
+        Map<String, List<Orden>> jsonMap = Collections.singletonMap("ordenes", lista_ordenes);
+
+        // Convierte el objeto a JSON
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        String ordenesJson;
+        try {
+            ordenesJson = objectMapper.writeValueAsString(jsonMap);
+            log.info("Contenido del JSON de las órdenes: " + ordenesJson);
+        } catch (JsonProcessingException e) {
+            log.error("Error al convertir la lista de órdenes a JSON");
+            e.printStackTrace();
+            return false;
+        }
+
+        // Hago el POST
+        request =
+            HttpRequest
+                .newBuilder()
+                .uri(URI.create("http://192.168.194.254:8000/api/reporte-operaciones/reportar"))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(ordenesJson))
+                .build();
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                log.info("ÓRDENES REPORTADAS CORRECTAMENTE");
+                // Puedes actualizar las órdenes en la base de datos o realizar otras acciones necesarias
+                for (Orden orden : lista_ordenes) {
+                    orden.setReportada(true);
+                    ordenRepository.save(orden);
+                }
+                return true;
+            } else {
+                log.error("ERROR AL REPORTAR LAS ÓRDENES. Código de respuesta: " + response.statusCode());
+                log.info("Respuesta del servidor: " + response.body());
+                return false;
+            }
+        } catch (IOException | InterruptedException e) {
+            log.error("ERROR AL ENVIAR LAS ÓRDENES AL SERVICIO");
             e.printStackTrace();
             return false;
         }

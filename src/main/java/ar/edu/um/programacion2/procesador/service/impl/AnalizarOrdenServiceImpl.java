@@ -10,10 +10,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,27 +103,18 @@ public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
 
     @Override
     public boolean consultarHora(Instant fechaOperacion) {
-        ZoneId zonaHorariaUtcMenos3 = ZoneId.of("UTC-3");
+        LocalTime hora = LocalTime.ofInstant(fechaOperacion, ZoneId.of("UTC"));
 
-        // Convertir la fechaOperacion a ZonedDateTime en la zona horaria UTC-3
-        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(fechaOperacion, zonaHorariaUtcMenos3);
+        LocalTime inicio = LocalTime.of(9, 0);
+        LocalTime fin = LocalTime.of(18, 0);
 
-        // Obtener la hora actual en la zona horaria UTC-3
-        LocalDateTime horaActualUtcMenos3 = ZonedDateTime.now(zonaHorariaUtcMenos3).toLocalDateTime();
+        boolean resultado = hora.isAfter(inicio) && hora.isBefore(fin);
 
-        LocalDateTime limiteInicio = horaActualUtcMenos3.withHour(9).withMinute(0).withSecond(0).withNano(0);
-        LocalDateTime limiteFin = horaActualUtcMenos3.withHour(18).withMinute(0).withSecond(0).withNano(0);
-
-        //boolean resultado = true;
-        boolean resultado =
-            !fechaOperacion.isBefore(limiteInicio.atZone(zonaHorariaUtcMenos3).toInstant()) &&
-            fechaOperacion.isBefore(limiteFin.atZone(zonaHorariaUtcMenos3).toInstant());
         if (!resultado) {
             log.info("La fecha operación {} no está entre las 9:00 hs y 18:00 hs", fechaOperacion);
         } else {
             log.info("La fecha operación {} está entre las 9:00 hs y 18:00 hs", fechaOperacion);
         }
-        // Verificar si la fechaOperacion está entre los límites
         return resultado;
     }
 

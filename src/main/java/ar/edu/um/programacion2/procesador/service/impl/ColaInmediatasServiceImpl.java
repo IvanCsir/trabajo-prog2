@@ -8,6 +8,7 @@ import ar.edu.um.programacion2.procesador.service.ColaInmediatasService;
 import ar.edu.um.programacion2.procesador.service.ProcesarOrdenService;
 import ar.edu.um.programacion2.procesador.service.ReportarOrdenService;
 import com.netflix.discovery.converters.Auto;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import org.slf4j.Logger;
@@ -41,11 +42,11 @@ public class ColaInmediatasServiceImpl implements ColaInmediatasService {
     @Override
     public boolean procesarOrdenesInmediatas() {
         Queue<Orden> cola = manejadorDeColas.getColaInmediatas();
+        List<Orden> lista_ordenes_reporte = new ArrayList<>();
         log.info("Tamaño inicial de la cola: {}", cola.size());
         while (!cola.isEmpty()) {
             Orden orden = cola.poll();
             if (analizarOrdenService.consultarHora(orden.getFechaOperacion())) {
-                System.out.println(orden.getFechaOperacion());
                 if (
                     analizarOrdenService.consultarAccion(orden.getCodigoAccion()) &&
                     analizarOrdenService.consultarCliente(orden.getClienteId())
@@ -54,12 +55,12 @@ public class ColaInmediatasServiceImpl implements ColaInmediatasService {
                         procesarOrdenService.comprar(orden);
                         log.info("COMPRA REALIZADA CON ÉXITO ORDEN ID: {}", orden.getId());
                         ordenRepository.save(orden);
-                        reportarOrdenService.reportarOrden(orden);
+                        lista_ordenes_reporte.add(orden);
                     } else {
                         procesarOrdenService.vender(orden);
                         log.info("VENTA REALIZADA CON ÉXITO ORDEN ID:{}", orden.getId());
                         ordenRepository.save(orden);
-                        reportarOrdenService.reportarOrden(orden);
+                        lista_ordenes_reporte.add(orden);
                     }
                 } else {
                     log.info("ORDEN ID:{} NO PROCESADA POR ACCIÓN O CLIENTE INEXISTENTE", orden.getId());
@@ -67,8 +68,7 @@ public class ColaInmediatasServiceImpl implements ColaInmediatasService {
                     orden.setOperacionExitosa(false);
                     orden.setOperacionObservaciones("Cliente o accion inexistente");
                     ordenRepository.save(orden);
-                    reportarOrdenService.reportarOrden(orden);
-                    return false;
+                    lista_ordenes_reporte.add(orden);
                 }
             } else {
                 log.info("FUERA DE HORARIO DE COMPRA Y VENTA DE ACCIONES");
@@ -76,11 +76,14 @@ public class ColaInmediatasServiceImpl implements ColaInmediatasService {
                 orden.setOperacionExitosa(false);
                 orden.setOperacionObservaciones("Fuera del horario de compra y venta de acciones");
                 ordenRepository.save(orden);
-                reportarOrdenService.reportarOrden(orden);
-                return false;
+                lista_ordenes_reporte.add(orden);
             }
         }
-        log.info("COLA DE ORDENES INMEDIATAS VACiA");
+        if (!lista_ordenes_reporte.isEmpty()) {
+            reportarOrdenService.reportarOrdenes(lista_ordenes_reporte);
+            lista_ordenes_reporte.clear();
+        }
+        log.info("COLA DE ORDENES INMEDIATAS VACIA");
         return false;
     }
 
