@@ -86,10 +86,9 @@ public class ColaInmediatasServiceImpl implements ColaInmediatasService {
         log.info("COLA DE ORDENES INMEDIATAS VACIA");
         return false;
     }
-
-    @Scheduled(fixedRate = 30000) // Lo ejecuto cada 1 minuto y medio
+    /*@Scheduled(fixedRate = 30000) // Lo ejecuto cada 1 minuto y medio
     public boolean procesarOrd() {
         boolean resultado = procesarOrdenesInmediatas();
         return resultado;
-    }
+    }*/
 }

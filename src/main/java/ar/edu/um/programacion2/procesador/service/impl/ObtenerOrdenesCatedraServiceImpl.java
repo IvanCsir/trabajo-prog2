@@ -90,14 +90,14 @@ public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraSe
             return Collections.emptyList();
         }
     }
-
-    @Scheduled(fixedRate = 60000) // Lo ejecuto cada 1 minuto
+    /*@Scheduled(fixedRate = 60000) // Lo ejecuto cada 1 minuto
     public List<Orden> obtenerOrdenesScheduled() {
         HttpResponse<String> response = obtenerRespuestaOrdenes();
         List<Orden> lista_ordenes = mapeoOrdenesCatedraToOrdenesDTO(response);
         System.out.println(lista_ordenes);
         return lista_ordenes;
-    }
+    }*/
+
     /* @Scheduled(fixedRate = 60001)
     public void probandoRepartidorColas(){
         RepartidorOrdenesAColasServiceImpl prueba = new RepartidorOrdenesAColasServiceImpl();
