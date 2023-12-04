@@ -179,4 +179,9 @@ public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
             return null;
         }
     }
+
+    @Override
+    public boolean consultarCantidad(int cantidad) {
+        return false;
+    }
 }
