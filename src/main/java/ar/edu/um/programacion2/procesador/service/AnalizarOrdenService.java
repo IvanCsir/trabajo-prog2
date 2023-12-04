@@ -13,5 +13,5 @@ public interface AnalizarOrdenService {
 
     public Orden actualizarPrecio(Orden orden);
 
-    public boolean consultarCantidad(int cantidad);
+    public boolean consultarCantidad(Orden orden);
 }

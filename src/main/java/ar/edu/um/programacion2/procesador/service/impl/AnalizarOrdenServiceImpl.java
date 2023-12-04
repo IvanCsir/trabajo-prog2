@@ -30,7 +30,7 @@ public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
     @Override
     public boolean consultarAccion(String codigo) {
         String token =
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ"; // Reemplaza con tu token real
+            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ";
 
         HttpClient client = HttpClient.newHttpClient();
 
@@ -64,7 +64,7 @@ public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
     @Override
     public boolean consultarCliente(int id) {
         String token =
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ"; // Reemplaza con tu token real
+            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ";
 
         HttpClient client = HttpClient.newHttpClient();
 
@@ -126,7 +126,7 @@ public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
     @Override
     public Orden actualizarPrecio(Orden orden) {
         String token =
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ"; // Reemplaza con tu token real
+            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ";
 
         HttpClient client = HttpClient.newHttpClient();
 
@@ -181,7 +181,47 @@ public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
     }
 
     @Override
-    public boolean consultarCantidad(int cantidad) {
-        return false;
+    public boolean consultarCantidad(Orden orden) {
+        String token =
+            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ";
+
+        String url =
+            "http://192.168.194.254:8000/api/reporte-operaciones/consulta_cliente_accion?clienteId=" +
+            orden.getClienteId() +
+            "&accionId=" +
+            orden.getAccionId();
+
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("Authorization", "Bearer " + token).build();
+
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Proceso la respuesta JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonResponse = objectMapper.readTree(response.body());
+
+            JsonNode cantidadActualNode = jsonResponse.get("cantidadActual");
+
+            if (cantidadActualNode == null || cantidadActualNode.isNull()) {
+                log.warn("EL CLIENTE NO POSEE ACCIONES PARA VENDER");
+                return false;
+            }
+
+            int cantidadActual = cantidadActualNode.asInt();
+
+            boolean resultado = orden.getCantidad() <= cantidadActual;
+
+            if (resultado) {
+                log.info("La cantidad de la orden es menor o igual a la cantidad actual. ¡Operación permitida!");
+            } else {
+                log.warn("La cantidad de la orden es mayor a la cantidad actual. ¡Operación no permitida!");
+            }
+
+            return resultado;
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
