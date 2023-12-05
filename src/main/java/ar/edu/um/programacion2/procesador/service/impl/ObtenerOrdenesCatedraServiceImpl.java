@@ -19,6 +19,7 @@ import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,11 +36,11 @@ public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraSe
     @Autowired
     public ManejadorDeColas manejadorDeColas;
 
+    @Value("${procesador_ordenes.token}")
+    protected String token;
+
     @Override
     public HttpResponse<String> obtenerRespuestaOrdenes() {
-        String token =
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ";
-
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request;
         request =

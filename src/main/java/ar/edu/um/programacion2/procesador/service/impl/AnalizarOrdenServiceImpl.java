@@ -15,6 +15,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,11 +28,11 @@ public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
     @Autowired
     protected OrdenRepository ordenRepository;
 
+    @Value("${procesador_ordenes.token}")
+    protected String token;
+
     @Override
     public boolean consultarAccion(String codigo) {
-        String token =
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ";
-
         HttpClient client = HttpClient.newHttpClient();
 
         String url = "http://192.168.194.254:8000/api/acciones/buscar?codigo=" + codigo;
@@ -63,9 +64,6 @@ public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
 
     @Override
     public boolean consultarCliente(int id) {
-        String token =
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ";
-
         HttpClient client = HttpClient.newHttpClient();
 
         String url = "http://192.168.194.254:8000/api/clientes/";
@@ -125,9 +123,6 @@ public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
 
     @Override
     public Orden actualizarPrecio(Orden orden) {
-        String token =
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ";
-
         HttpClient client = HttpClient.newHttpClient();
 
         String url = "http://192.168.194.254:8000/api/acciones/ultimovalor/" + orden.getCodigoAccion();
@@ -182,9 +177,6 @@ public class AnalizarOrdenServiceImpl implements AnalizarOrdenService {
 
     @Override
     public boolean consultarCantidad(Orden orden) {
-        String token =
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpdmFuZnJlaWJlcmciLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzMwMzYyNjcwfQ._03byVo-wHkFD1Uq7scw4MHWHl7hlI0B6JmpTKqb2iaIG1V8rEXhsFNEd8Us2NrFWxwkUYQQkEa3k6QcWxBJyQ";
-
         String url =
             "http://192.168.194.254:8000/api/reporte-operaciones/consulta_cliente_accion?clienteId=" +
             orden.getClienteId() +
