@@ -63,6 +63,38 @@ public class Orden implements Serializable {
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
+    public Orden() {}
+
+    public Orden(
+        Long id,
+        Integer clienteId,
+        Integer accionId,
+        String codigoAccion,
+        String operacion,
+        Double precio,
+        Integer cantidad,
+        Instant fechaOperacion,
+        String modo,
+        Boolean operacionExitosa,
+        String operacionObservaciones,
+        Boolean ejecutada,
+        Boolean reportada
+    ) {
+        this.id = id;
+        this.clienteId = clienteId;
+        this.accionId = accionId;
+        this.codigoAccion = codigoAccion;
+        this.operacion = operacion;
+        this.precio = precio;
+        this.cantidad = cantidad;
+        this.fechaOperacion = fechaOperacion;
+        this.modo = modo;
+        this.operacionExitosa = operacionExitosa;
+        this.operacionObservaciones = operacionObservaciones;
+        this.ejecutada = ejecutada;
+        this.reportada = reportada;
+    }
+
     public Long getId() {
         return this.id;
     }
