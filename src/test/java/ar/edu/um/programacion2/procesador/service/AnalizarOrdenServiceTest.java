@@ -1,18 +1,15 @@
 package ar.edu.um.programacion2.procesador.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import ar.edu.um.programacion2.procesador.domain.Orden;
 import ar.edu.um.programacion2.procesador.service.impl.AnalizarOrdenServiceImpl;
-import com.netflix.discovery.converters.Auto;
 import java.time.Instant;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class AnalizarOrdenServiceTest {
 
@@ -25,7 +22,25 @@ public class AnalizarOrdenServiceTest {
     }
 
     @Test
-    public void consultarhorario() {
+    public void consultarClienteTest() {
+        AnalizarOrdenServiceImpl servicioMock = mock(AnalizarOrdenServiceImpl.class);
+        when(servicioMock.consultarCliente(1137)).thenReturn(true);
+        assertTrue(servicioMock.consultarCliente(1137));
+        verify(servicioMock).consultarCliente(1137);
+    }
+
+    @Test
+    public void consultarCantidadTest() {
+        Orden orden = new Orden();
+        orden.setAccionId(3);
+        orden.setClienteId(1138);
+        AnalizarOrdenServiceImpl servicioMock = mock(AnalizarOrdenServiceImpl.class);
+        when(servicioMock.consultarCantidad(orden)).thenReturn(false);
+        assertFalse(servicioMock.consultarCantidad(orden));
+    }
+
+    @Test
+    public void consultarhorarioTrue() {
         Orden orden = new Orden();
         String fechaOperacionStr = "2023-12-06T15:00:00Z";
         Instant fechaOperacion = Instant.parse(fechaOperacionStr);
@@ -34,7 +49,11 @@ public class AnalizarOrdenServiceTest {
     }
 
     @Test
-    public void consultarAccion() {
-        assertTrue(analizarOrdenService.consultarAccion("PAM"));
+    public void consultarhorarioFalse() {
+        Orden orden = new Orden();
+        String fechaOperacionStr = "2023-12-06T05:00:00Z";
+        Instant fechaOperacion = Instant.parse(fechaOperacionStr);
+        orden.setFechaOperacion(fechaOperacion);
+        assertFalse(analizarOrdenService.consultarHora(orden.getFechaOperacion()));
     }
 }

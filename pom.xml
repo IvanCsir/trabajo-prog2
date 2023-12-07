@@ -338,6 +338,14 @@
             <version>1.15.3</version> <!-- Ajusta la versión según la última disponible -->
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.12.4</version> <!-- Utiliza la última versión disponible -->
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
     <build>
