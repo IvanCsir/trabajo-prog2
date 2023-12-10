@@ -2,6 +2,7 @@ package ar.edu.um.programacion2.procesador.service.impl;
 
 import ar.edu.um.programacion2.procesador.domain.Orden;
 import ar.edu.um.programacion2.procesador.repository.OrdenRepository;
+import ar.edu.um.programacion2.procesador.repository.ReportarOrdenRepository;
 import ar.edu.um.programacion2.procesador.service.ReportarOrdenService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,10 +13,13 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.aspectj.weaver.ast.Or;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +35,9 @@ public class ReportarOrdenServiceImpl implements ReportarOrdenService {
 
     @Autowired
     protected OrdenRepository ordenRepository;
+
+    @Autowired
+    protected ReportarOrdenRepository reportarOrdenRepository;
 
     @Value("${procesador_ordenes.token}")
     protected String token;
@@ -133,7 +140,6 @@ public class ReportarOrdenServiceImpl implements ReportarOrdenService {
 
             if (response.statusCode() == 200) {
                 log.info("ÓRDENES REPORTADAS CORRECTAMENTE");
-                // Puedes actualizar las órdenes en la base de datos o realizar otras acciones necesarias
                 for (Orden orden : lista_ordenes) {
                     orden.setReportada(true);
                     ordenRepository.save(orden);
@@ -149,5 +155,21 @@ public class ReportarOrdenServiceImpl implements ReportarOrdenService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public List<Orden> getReportesByCliente(int id) {
+        List<Orden> lista_ordenes = reportarOrdenRepository.findByReportadaAndClienteId(true, id);
+        return lista_ordenes;
+    }
+
+    @Override
+    public List<Orden> getReportesByCodigoAccion(String codigo_accion) {
+        return reportarOrdenRepository.findByReportadaAndCodigoAccion(true, codigo_accion);
+    }
+
+    @Override
+    public List<Orden> getReportesByFechaOperacionBetween(Instant inicioDia, Instant finDia) {
+        return reportarOrdenRepository.findByReportadaAndFechaOperacionBetween(true, inicioDia, finDia);
     }
 }
