@@ -42,7 +42,7 @@ public class AnalizarOrdenServiceTest {
     @Test
     public void consultarhorarioTrue() {
         Orden orden = new Orden();
-        String fechaOperacionStr = "2023-12-06T15:00:00Z";
+        String fechaOperacionStr = "2023-12-12T15:00:00Z";
         Instant fechaOperacion = Instant.parse(fechaOperacionStr);
         orden.setFechaOperacion(fechaOperacion);
         assertTrue(analizarOrdenService.consultarHora(orden.getFechaOperacion()));
@@ -51,7 +51,7 @@ public class AnalizarOrdenServiceTest {
     @Test
     public void consultarhorarioFalse() {
         Orden orden = new Orden();
-        String fechaOperacionStr = "2023-12-06T05:00:00Z";
+        String fechaOperacionStr = "2023-12-12T05:00:00Z";
         Instant fechaOperacion = Instant.parse(fechaOperacionStr);
         orden.setFechaOperacion(fechaOperacion);
         assertFalse(analizarOrdenService.consultarHora(orden.getFechaOperacion()));

@@ -19,10 +19,10 @@ procesador_ordenes:
 
 logging:
   level:
-    ROOT: DEBUG
-    tech.jhipster: DEBUG
-    org.hibernate.SQL: DEBUG
-    ar.edu.um.programacion2.procesador: DEBUG
+    ROOT: INFO
+    tech.jhipster: INFO
+    org.hibernate.SQL: INFO
+    ar.edu.um.programacion2.procesador: INFO
 
 eureka:
   instance:

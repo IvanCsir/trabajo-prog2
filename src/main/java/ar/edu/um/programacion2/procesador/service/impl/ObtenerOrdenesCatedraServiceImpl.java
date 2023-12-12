@@ -56,7 +56,7 @@ public class ObtenerOrdenesCatedraServiceImpl implements ObtenerOrdenesCatedraSe
             return response;
         } catch (IOException | InterruptedException e) {
             log.error("NO SE PUDIERON OBTENER LAS ORDENES DEL SERVICIO CATEDRA");
-            e.printStackTrace();
+            e.printStackTrace(); //Ideal agregarlo en el log
             return null;
         }
     }
